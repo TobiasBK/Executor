@@ -1,22 +1,27 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.6;
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.6 <0.9.0;
 
 import "ds-test/test.sol";
 
 import "./Executor.sol";
 
+// contract Callee {
+//     uint256 count;
+
+//     function counter(uint256 _num) public view returns (uint256) {
+//         uint256 newCount = count + _num;
+//         return newCount;
+//     }
+// }
+
 contract ExecutorTest is DSTest {
-    Executor executor;
+    Executor private executor;
 
     function setUp() public {
         executor = new Executor();
     }
 
-    function testFail_basic_sanity() public {
-        assertTrue(false);
-    }
+    function test_executor() public {}
 
-    function test_basic_sanity() public {
-        assertTrue(true);
-    }
+    function testFail_executor() public {}
 }
