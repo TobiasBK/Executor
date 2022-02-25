@@ -2,21 +2,26 @@
 
 A smart contract that executes anything the owner sends it with .call()
 
-This is a work in progress...
+[dapp.tools](dapp.tools) used for development.
 
-Uses [dapp.tools](dapp.tools) for development.
+## On `.call`
 
-## Notes
+Solidity uses `.call` as a low-level function to interface with other contracts. It returns `true` normally (if it compiles), and will return `false` if it encounters an exception.
 
-- calldata non-modifiable; saves gas as an input
+Another way to interact with other contracts is to use this style:
+`contractAddressToCall.functionToCall(parameters)`. But this only works if you have all the information at deployment time.
 
-`function callSetN(address _e, uint _n) {
-    _e.call(bytes4(sha3("setN(uint256)")), _n); // E's storage is set, D is not modified
-}`
+With less information available at the time of deployment, use the `.call` method. To call functions in other contracts or send payment to payable functions, the recommended style is:
 
-`function register(string _text) {
-    watch_addr.call(bytes4(sha3("register(string)")), _text);
-}`
+`(bool success, bool returnBytes) = addr.call{...}(abi.encodeWithSignature(...), ...)`
+
+## On calldata
+
+In Solidity:
+
+- memory - lifetime is limited to a function call
+- storage - the location where the state variables are stored
+- calldata - special data location that contains the function arguments, only available for external function call parameters. Calldata is non-modifiable; saves gas as an input.
 
 ## References
 
@@ -26,3 +31,4 @@ Uses [dapp.tools](dapp.tools) for development.
 - https://www.zupzup.org/smart-contract-interaction/
 - https://eip2535diamonds.substack.com/p/understanding-delegatecall-and-how?utm_source=url
 - https://medium.com/@houzier.saurav/calling-functions-of-other-contracts-on-solidity-9c80eed05e0f
+- https://ethereum.stackexchange.com/questions/119960/what-role-does-abi-encoding-play-in-digital-signature
