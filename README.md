@@ -1,6 +1,6 @@
 # Executor
 
-A smart contract that executes anything the owner sends it with .call()
+A smart contract that executes anything the owner sends it with `.call`.
 
 [dapp.tools](dapp.tools) used for development.
 
