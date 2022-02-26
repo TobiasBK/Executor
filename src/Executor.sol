@@ -5,8 +5,9 @@ pragma solidity >=0.8.6 <0.9.0;
  * @dev A contract that allows the owner to call another contract using .call
  */
 contract Executor {
-    address private owner;
+    address public owner;
 
+    event Deposit(address indexed sender, uint256 value);
     event Result(bool success, bytes data);
 
     modifier onlyOwner() {
@@ -22,9 +23,19 @@ contract Executor {
     }
 
     /**
-     * @dev Fallback function recevies any ether sent to this contract
+     * @dev A type of fallback function to recieve ether when it is sent with NO calldata.
+     * Also useful for testing, executes on .send() or .transfer().
      */
-    fallback() external payable {}
+    receive() external payable {
+        emit Deposit(msg.sender, msg.value);
+    }
+
+    /**
+     * @dev Allows owner to set a new owner address
+     */
+    function setOwner(address _owner) external onlyOwner {
+        owner = _owner;
+    }
 
     /**
      * @dev Allows owner to withdraw all ether
@@ -38,7 +49,7 @@ contract Executor {
      * @dev Solidity's .call is a low-level function for interacting with other smart contracts
      * This is a great way to interface with smart contracts without the need for an ABI
      */
-    function executor(address _externalAddr, bytes memory _externalData)
+    function executeFunction(address _externalAddr, bytes memory _externalData)
         public
         payable
         onlyOwner
