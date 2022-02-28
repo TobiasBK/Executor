@@ -54,8 +54,54 @@ contract Executor {
         payable
         onlyOwner
     {
-        (bool success, ) = _externalAddr.call{value: msg.value}(_externalData);
+        (bool itWorked, ) = _externalAddr.call{value: msg.value}(_externalData);
 
-        emit Result(success, "Failed to execute");
+        emit Result(itWorked, "Failed to execute");
+    }
+
+    /**
+     * @dev Call multiple functions in another contract.
+     * This is a view function and therefore uses staticcall.
+     */
+    function multiCallView(
+        address[] calldata _targetFuncs,
+        bytes[] calldata _targetData
+    ) external view onlyOwner returns (bytes[] memory) {
+        require(
+            _targetFuncs.length == _targetData.length,
+            "Array lengths aren't equal"
+        );
+        bytes[] memory findings = new bytes[](_targetData.length);
+        for (uint256 i = 0; i <= _targetFuncs.length; i++) {
+            (bool itWorked, bytes memory finding) = _targetFuncs[i].staticcall(
+                _targetData[i]
+            );
+            require(itWorked, "MulticallView: failed");
+            findings[i] = finding;
+        }
+        return findings;
+    }
+
+    /**
+     * @dev Call multiple functions in another contract.
+     * This is not a view function and therefore uses call (meaning you can write to the other contract).
+     */
+    function multiCall(
+        address[] calldata _targetFuncs,
+        bytes[] calldata _targetData
+    ) external onlyOwner returns (bytes[] memory) {
+        require(
+            _targetFuncs.length == _targetData.length,
+            "Array lengths aren't equal"
+        );
+        bytes[] memory findings = new bytes[](_targetData.length);
+        for (uint256 i = 0; i <= _targetFuncs.length; i++) {
+            (bool itWorked, bytes memory finding) = _targetFuncs[i].call(
+                _targetData[i]
+            );
+            require(itWorked, "Multicall: failed");
+            findings[i] = finding;
+        }
+        return findings;
     }
 }
