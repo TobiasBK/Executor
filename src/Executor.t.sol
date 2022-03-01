@@ -38,17 +38,35 @@ contract SendEth {
     }
 }
 
+contract TestMultiCall {
+    Executor private executor;
+
+    constructor(address _executor) {
+        executor = Executor(payable(_executor));
+    }
+
+    function testMultiCall(uint256 _num) external pure returns (uint256) {
+        return _num;
+    }
+
+    function getData(uint256 _num) external pure returns (bytes memory) {
+        return abi.encodeWithSelector(this.testMultiCall.selector, _num);
+    }
+}
+
 contract ExecutorTest is DSTest {
     Executor private executor;
     NotOwner private notOwner;
     SendEth private sendEth;
     Calle private calle;
+    TestMultiCall private testMultiCall;
 
     function setUp() public {
         executor = new Executor();
         notOwner = new NotOwner(address(notOwner));
         sendEth = new SendEth(address(sendEth));
         calle = new Calle();
+        testMultiCall = new TestMultiCall(address(testMultiCall));
     }
 
     //UNIT TESTING
@@ -78,4 +96,6 @@ contract ExecutorTest is DSTest {
     function test_executeFunction() public {
         executor.executeFunction(address(calle), "");
     }
+
+    function test_testMultiCall() public {}
 }
