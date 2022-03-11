@@ -32,3 +32,4 @@ In Solidity:
 - https://eip2535diamonds.substack.com/p/understanding-delegatecall-and-how?utm_source=url
 - https://medium.com/@houzier.saurav/calling-functions-of-other-contracts-on-solidity-9c80eed05e0f
 - https://ethereum.stackexchange.com/questions/119960/what-role-does-abi-encoding-play-in-digital-signature
+- https://solidity-by-example.org/
