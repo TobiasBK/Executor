@@ -2,7 +2,8 @@
 pragma solidity >=0.8.6 <0.9.0;
 
 /**
- * @dev A contract that allows the owner to call another contract using .call
+ * @dev This contract has multiple functions that can be used for interacting with other smart contracts.
+ * @notice Check out references in the README on topics like data storage
  */
 contract Executor {
     address public owner;
@@ -11,7 +12,7 @@ contract Executor {
     event Result(bool success, bytes data);
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
+        require(msg.sender == owner, "NOT OWNER");
         _;
     }
 
@@ -42,21 +43,49 @@ contract Executor {
      */
     function withdraw() external onlyOwner {
         (bool success, ) = msg.sender.call{value: address(this).balance}("");
-        require(success, "Withdraw failed");
+        require(success, "WITHDRAW FAILED");
     }
 
     /**
      * @dev Solidity's .call is a low-level function for interacting with other smart contracts
      * This is a great way to interface with smart contracts without the need for an ABI
      */
-    function executeFunction(address _externalAddr, bytes memory _externalData)
+    function basicExecute(address _externalAddr, bytes memory _externalData)
         public
         payable
         onlyOwner
     {
         (bool itWorked, ) = _externalAddr.call{value: msg.value}(_externalData);
 
-        emit Result(itWorked, "Failed to execute");
+        emit Result(itWorked, "BASIC EXECUTE: FAILED");
+    }
+
+    /**
+     * @dev Solidity's .call is a low-level function for interacting with other smart contracts
+     */
+    function execute(
+        address _target,
+        uint256 _value,
+        string memory _signature,
+        bytes memory _data
+    ) public payable returns (bytes memory) {
+        bytes memory callData;
+
+        if (bytes(_signature).length == 0) {
+            callData = _data;
+        } else {
+            callData = abi.encodePacked(
+                bytes4(keccak256(bytes(_signature))),
+                _data
+            );
+        }
+
+        (bool itWorked, bytes memory getData) = _target.call{value: _value}(
+            callData
+        );
+        require(itWorked, "EXECUTE: CALL FAILED");
+
+        return getData;
     }
 
     /**

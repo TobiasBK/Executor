@@ -33,3 +33,13 @@ In Solidity:
 - https://medium.com/@houzier.saurav/calling-functions-of-other-contracts-on-solidity-9c80eed05e0f
 - https://ethereum.stackexchange.com/questions/119960/what-role-does-abi-encoding-play-in-digital-signature
 - https://solidity-by-example.org/
+
+### On data storage
+
+- https://docs.soliditylang.org/en/v0.5.3/types.html#data-location
+- https://stackoverflow.com/questions/68997666/what-is-bytes-calldata-data
+- https://blog.openzeppelin.com/ethereum-in-depth-part-2-6339cf6bddb9/
+
+### Testing
+
+- https://github.com/pickle-finance/protocol/tree/master/src/tests

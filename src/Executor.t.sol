@@ -69,6 +69,8 @@ contract ExecutorTest is DSTest {
         testMultiCall = new TestMultiCall(address(testMultiCall));
     }
 
+    receive() external payable {}
+
     //UNIT TESTING
     function test_receive() public {
         assertEq((address(executor).balance), 0);
@@ -78,10 +80,10 @@ contract ExecutorTest is DSTest {
 
     function test_withdraw() public {
         payable(address(executor)).transfer(1 ether);
-        uint256 preBalance = address(this).balance;
+        uint256 preSendBalance = address(this).balance;
         executor.withdraw();
-        uint256 postBalance = address(this).balance;
-        assertEq(postBalance + 1 ether, preBalance);
+        uint256 postSendBalance = address(this).balance;
+        assertEq(preSendBalance + 1 ether, postSendBalance);
     }
 
     function test_setOwner() public {
@@ -94,7 +96,7 @@ contract ExecutorTest is DSTest {
     }
 
     function test_executeFunction() public {
-        executor.executeFunction(address(calle), "");
+        executor.basicExecute(address(calle), "");
     }
 
     function test_testMultiCall() public {}
